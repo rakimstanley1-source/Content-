@@ -1,0 +1,131 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// SQLite has no native enum support in Prisma, so Platform, ContentFormat
+// and PipelineStatus are plain strings constrained in application code
+// (see lib/domain-types.ts) rather than Prisma enums.
+
+model Brand {
+  id              String   @id @default(cuid())
+  name            String
+  slug            String   @unique
+  identity        String   @default("")
+  audience        String   @default("")
+  voice           String   @default("")
+  products        String   @default("")
+  colorPalette    String   @default("[]") // JSON string array of hex colors
+  visualAesthetic String   @default("")
+  contentPillars  String   @default("[]") // JSON string array
+  platforms       String   @default("[]") // JSON string array of Platform
+  aiInstructions  String   @default("")
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  contentItems ContentItem[]
+  campaigns    Campaign[]
+  goals        Goal[]
+  tasks        TaskItem[]
+  automations  Automation[]
+}
+
+model ContentItem {
+  id               String         @id @default(cuid())
+  brandId          String
+  brand            Brand          @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  campaignId       String?
+  campaign         Campaign?      @relation(fields: [campaignId], references: [id])
+  platform         String // Platform
+  format           String // ContentFormat
+  caption          String         @default("")
+  hook             String         @default("")
+  cta              String         @default("")
+  hashtags         String         @default("[]") // JSON string array
+  mediaUrl         String?
+  status           String         @default("IDEA") // PipelineStatus
+  scheduledAt      DateTime?
+  publishedAt      DateTime?
+  externalPostId   String?
+  externalPermalink String?
+  repurposedFromId String?
+  repurposedFrom   ContentItem?   @relation("Repurpose", fields: [repurposedFromId], references: [id])
+  repurposedInto   ContentItem[]  @relation("Repurpose")
+  notes            String         @default("")
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+
+  tasks TaskItem[]
+
+  @@index([brandId, status])
+  @@index([scheduledAt])
+}
+
+model Campaign {
+  id          String    @id @default(cuid())
+  brandId     String
+  brand       Brand     @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  name        String
+  description String    @default("")
+  goal        String    @default("")
+  status      String    @default("planned") // planned | active | complete
+  startDate   DateTime?
+  endDate     DateTime?
+  createdAt   DateTime  @default(now())
+
+  contentItems ContentItem[]
+}
+
+model Goal {
+  id        String   @id @default(cuid())
+  brandId   String
+  brand     Brand    @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  metric    String // e.g. "new_subscribers", "posts_published", "save_rate"
+  label     String
+  target    Float
+  period    String // weekly | monthly
+  startDate DateTime @default(now())
+  createdAt DateTime @default(now())
+}
+
+model TaskItem {
+  id            String       @id @default(cuid())
+  brandId       String
+  brand         Brand        @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  contentItemId String?
+  contentItem   ContentItem? @relation(fields: [contentItemId], references: [id])
+  title         String
+  dueAt         DateTime?
+  done          Boolean      @default(false)
+  createdAt     DateTime     @default(now())
+}
+
+model Automation {
+  id          String    @id @default(cuid())
+  brandId     String?
+  brand       Brand?    @relation(fields: [brandId], references: [id])
+  name        String
+  description String    @default("")
+  trigger     String // JSON: { type, config }
+  steps       String // JSON: [{ type, config }]
+  enabled     Boolean   @default(true)
+  lastRunAt   DateTime?
+  createdAt   DateTime  @default(now())
+
+  runs AutomationRun[]
+}
+
+model AutomationRun {
+  id           String     @id @default(cuid())
+  automationId String
+  automation   Automation @relation(fields: [automationId], references: [id], onDelete: Cascade)
+  status       String // running | success | failed
+  startedAt    DateTime   @default(now())
+  finishedAt   DateTime?
+  log          String     @default("")
+}

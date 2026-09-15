@@ -1,0 +1,52 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+  :root[data-theme="light"] {
+    color-scheme: light;
+  }
+  html,
+  body {
+    @apply bg-canvas text-ink antialiased;
+  }
+  :root[data-theme="light"] body {
+    @apply bg-canvas-light text-ink-light;
+  }
+  * {
+    @apply border-hairline;
+  }
+  ::selection {
+    background: rgba(217, 123, 79, 0.25);
+  }
+  .tabular {
+    font-feature-settings: "tnum" 1;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@layer utilities {
+  .hairline-b {
+    border-bottom: 1px solid theme("colors.hairline.DEFAULT");
+  }
+  :root[data-theme="light"] .hairline-b {
+    border-bottom: 1px solid theme("colors.hairline.light");
+  }
+  .hairline-t {
+    border-top: 1px solid theme("colors.hairline.DEFAULT");
+  }
+  :root[data-theme="light"] .hairline-t {
+    border-top: 1px solid theme("colors.hairline.light");
+  }
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: rgba(163, 160, 153, 0.25);
+    border-radius: 3px;
+  }
+}
