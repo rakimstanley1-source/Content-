@@ -115,7 +115,7 @@ export function ContentComposer({
       <style jsx global>{`
         .input {
           width: 100%;
-          border: 1px solid rgba(243, 241, 236, 0.09);
+          border: 1px solid var(--color-hairline);
           background: transparent;
           border-radius: 6px;
           padding: 0.5rem 0.75rem;

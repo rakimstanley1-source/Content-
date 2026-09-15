@@ -5,16 +5,25 @@
 @layer base {
   :root {
     color-scheme: dark;
+    --color-canvas: #0a0a0a;
+    --color-canvas-raised: #111110;
+    --color-ink: #f3f1ec;
+    --color-ink-dim: #a3a099;
+    --color-ink-faint: #6b6862;
+    --color-hairline: rgba(243, 241, 236, 0.09);
   }
   :root[data-theme="light"] {
     color-scheme: light;
+    --color-canvas: #faf9f6;
+    --color-canvas-raised: #ffffff;
+    --color-ink: #161513;
+    --color-ink-dim: #5c5951;
+    --color-ink-faint: #8a877f;
+    --color-hairline: rgba(22, 21, 19, 0.09);
   }
   html,
   body {
     @apply bg-canvas text-ink antialiased;
-  }
-  :root[data-theme="light"] body {
-    @apply bg-canvas-light text-ink-light;
   }
   * {
     @apply border-hairline;
@@ -30,16 +39,10 @@
 
 @layer utilities {
   .hairline-b {
-    border-bottom: 1px solid theme("colors.hairline.DEFAULT");
-  }
-  :root[data-theme="light"] .hairline-b {
-    border-bottom: 1px solid theme("colors.hairline.light");
+    border-bottom: 1px solid var(--color-hairline);
   }
   .hairline-t {
-    border-top: 1px solid theme("colors.hairline.DEFAULT");
-  }
-  :root[data-theme="light"] .hairline-t {
-    border-top: 1px solid theme("colors.hairline.light");
+    border-top: 1px solid var(--color-hairline);
   }
   .scrollbar-thin::-webkit-scrollbar {
     width: 6px;

@@ -23,15 +23,15 @@ export function DualLineChart({
     <div className="h-64 w-full">
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={data} margin={{ top: 8, right: 8, left: -20, bottom: 0 }}>
-          <CartesianGrid stroke="rgba(163,160,153,0.08)" vertical={false} />
-          <XAxis dataKey="date" stroke="rgba(163,160,153,0.4)" fontSize={11} tickLine={false} axisLine={false} />
-          <YAxis stroke="rgba(163,160,153,0.4)" fontSize={11} tickLine={false} axisLine={false} />
+          <CartesianGrid stroke="var(--color-hairline)" vertical={false} />
+          <XAxis dataKey="date" stroke="var(--color-ink-faint)" fontSize={11} tickLine={false} axisLine={false} />
+          <YAxis stroke="var(--color-ink-faint)" fontSize={11} tickLine={false} axisLine={false} />
           <Tooltip
-            contentStyle={{ background: "#111110", border: "1px solid rgba(243,241,236,0.09)", borderRadius: 6, fontSize: 12 }}
-            labelStyle={{ color: "#f3f1ec" }}
+            contentStyle={{ background: "var(--color-canvas-raised)", border: "1px solid var(--color-hairline)", borderRadius: 6, fontSize: 12 }}
+            labelStyle={{ color: "var(--color-ink)" }}
           />
           <Line type="monotone" dataKey="a" name={labelA} stroke="#d97b4f" strokeWidth={2} dot={false} connectNulls />
-          <Line type="monotone" dataKey="b" name={labelB} stroke="#a3a099" strokeWidth={1.5} dot={false} connectNulls />
+          <Line type="monotone" dataKey="b" name={labelB} stroke="var(--color-ink-dim)" strokeWidth={1.5} dot={false} connectNulls />
         </LineChart>
       </ResponsiveContainer>
     </div>

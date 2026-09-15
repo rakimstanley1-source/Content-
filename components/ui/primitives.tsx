@@ -3,14 +3,14 @@ import { AlertTriangle, PlugZap } from "lucide-react";
 import type { ReactNode } from "react";
 
 export function Card({ children, className }: { children: ReactNode; className?: string }) {
-  return <div className={cn("rounded-card border border-hairline bg-canvas-raised p-5 dark:border-hairline", className)}>{children}</div>;
+  return <div className={cn("rounded-card border border-hairline bg-canvas-raised p-5", className)}>{children}</div>;
 }
 
 export function SectionHeading({ title, subtitle, action }: { title: string; subtitle?: string; action?: ReactNode }) {
   return (
     <div className="mb-5 flex items-start justify-between gap-4">
       <div>
-        <h2 className="font-serif text-xl text-ink dark:text-ink">{title}</h2>
+        <h2 className="font-serif text-xl text-ink">{title}</h2>
         {subtitle && <p className="mt-1 text-sm text-ink-dim">{subtitle}</p>}
       </div>
       {action}

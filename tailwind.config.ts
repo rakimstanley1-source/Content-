@@ -1,23 +1,23 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
-  darkMode: "class",
   content: ["./app/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./lib/**/*.{ts,tsx}"],
   theme: {
     extend: {
       colors: {
+        // Theme-aware tokens: these resolve to CSS custom properties
+        // defined in globals.css, which flip under [data-theme="light"].
+        // Using vars here (rather than Tailwind's `dark:` variant) means
+        // every component that references e.g. bg-canvas-raised is
+        // automatically theme-correct with no dark: prefixes to remember.
         canvas: {
-          DEFAULT: "#0a0a0a",
-          raised: "#111110",
-          light: "#faf9f6",
-          "light-raised": "#ffffff",
+          DEFAULT: "var(--color-canvas)",
+          raised: "var(--color-canvas-raised)",
         },
         ink: {
-          DEFAULT: "#f3f1ec",
-          dim: "#a3a099",
-          faint: "#6b6862",
-          light: "#161513",
-          "light-dim": "#5c5951",
+          DEFAULT: "var(--color-ink)",
+          dim: "var(--color-ink-dim)",
+          faint: "var(--color-ink-faint)",
         },
         accent: {
           DEFAULT: "#d97b4f",
@@ -27,8 +27,7 @@ const config: Config = {
         good: "#7fae7a",
         bad: "#c56159",
         hairline: {
-          DEFAULT: "rgba(243,241,236,0.09)",
-          light: "rgba(22,21,19,0.09)",
+          DEFAULT: "var(--color-hairline)",
         },
       },
       fontFamily: {
