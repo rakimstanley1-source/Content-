@@ -3,13 +3,13 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-// SQLite has no native enum support in Prisma, so Platform, ContentFormat
-// and PipelineStatus are plain strings constrained in application code
-// (see lib/domain-types.ts) rather than Prisma enums.
+// Platform, ContentFormat and PipelineStatus are plain strings constrained
+// in application code (see lib/domain-types.ts) rather than Prisma enums,
+// so this schema stays portable across databases without a migration.
 
 model Brand {
   id              String   @id @default(cuid())

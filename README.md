@@ -4,12 +4,12 @@ An AI-powered content command center for a single-operator brand (or several): p
 
 ## Stack
 
-Next.js 14 (App Router) + TypeScript + Tailwind, Prisma/SQLite for the operator's own data (brands, content pipeline, campaigns, goals, tasks, automations), the `composio-core` SDK for every external app, and the Anthropic SDK for content generation.
+Next.js 14 (App Router) + TypeScript + Tailwind, Prisma/Postgres for the operator's own data (brands, content pipeline, campaigns, goals, tasks, automations), the `composio-core` SDK for every external app, and the Anthropic SDK for content generation.
 
-## Setup
+## Local setup
 
 ```bash
-cp .env.example .env   # fill in the keys below
+cp .env.example .env   # fill in the keys below, including a Postgres DATABASE_URL
 npm install
 npm run db:push
 npm run dev
@@ -19,9 +19,21 @@ Required environment variables (server-side only, never exposed to the client):
 
 - `COMPOSIO_API_KEY` — Composio API key. Without it, every analytics/publish call fails closed with an explicit "not connected" state; nothing fabricates data.
 - `ANTHROPIC_API_KEY` — powers the Create workspace and recommendations.
-- `DATABASE_URL` — defaults to a local SQLite file.
+- `DATABASE_URL` — a Postgres connection string (see `.env.example`). Any Postgres works locally; a free Neon or Supabase database works in production.
 
 Optional: `COMPOSIO_ENTITY_ID`, `COMPOSIO_EMAIL_PROVIDER` (`mailchimp` or `mailerlite`), and per-toolkit `COMPOSIO_*_ACCOUNT_ID` overrides for when more than one account of a toolkit is connected (Composio requires an explicit account id in that case).
+
+## Deploying to Vercel
+
+The app is deployed as ordinary Next.js serverless functions, which have no persistent local disk — that's why the database is Postgres rather than the SQLite file used in early local prototyping (a SQLite file would get wiped between requests). Steps:
+
+1. **Database**: In the Vercel dashboard, add the **Neon** or **Supabase** Postgres integration (Storage tab) to the project — it provisions a free Postgres database and injects `DATABASE_URL` automatically. (Or create one yourself at neon.tech/supabase.com and paste the connection string in as an env var.)
+2. **Import the repo**: vercel.com → Add New → Project → import this GitHub repo. Vercel auto-detects Next.js; no build-command changes needed (`prisma generate` already runs via `postinstall` and the `build` script).
+3. **Environment variables**: in the project's Settings → Environment Variables, add `COMPOSIO_API_KEY` and `ANTHROPIC_API_KEY` (and any optional ones you need). `DATABASE_URL` is already set if you used step 1's integration.
+4. **Push the schema**: after the first deploy (or before it, pointing at the same `DATABASE_URL` from your machine), run `npx prisma db push` once to create the tables in the production database. There's no separate migrations folder to run — `db push` is the whole step.
+5. **Deploy**. Open the resulting `*.vercel.app` URL on your phone — it's the real app, not a preview.
+
+Composio's connect flow opens an OAuth URL in a new tab (see `/integrations`), which works the same on mobile Safari/Chrome as on desktop.
 
 ## Architecture
 
